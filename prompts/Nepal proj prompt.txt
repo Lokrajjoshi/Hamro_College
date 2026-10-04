@@ -1,0 +1,143 @@
+Nepal proj prompt
+# Project Specification: HamroClg (हाम्रो College)
+### Unbiased Pre-Consultancy Research & Ground-Reality Platform for Nepali Students & Parents
+
+---
+
+## 1. Executive Summary & Problem Context
+In Nepal, education consultancies (predominantly centered in Putalisadak and Bagbazar) operate on high institutional commission kickbacks, often misguiding middle-class families into predatory, substandard, or geographically isolated colleges in India (e.g., Bangalore, Pune, Delhi) and abroad (e.g., Japan, Australia, UK, USA). Families lack transparent, unmanipulated ground-truth data on total costs in Nepalese Rupees (NPR), campus safety, actual placements, language barriers, and student survival conditions.
+
+**HamroClg** is an independent, data-driven, interactive higher-education intelligence platform. It acts as a **Pre-Consultancy Defense Shield**, enabling Nepali students and parents to conduct rigorous self-research, compare unvarnished ground realities, calculate net expenses, and export an immutable "Consultancy Defense Dossier" to take into agency meetings so they dictate terms instead of being exploited.
+
+---
+
+## 2. Target Personas
+1. **The Ambitious Nepali Student**: Seeking tech/career outcomes, real peer reviews, campus culture, internship ecosystems, part-time work legality, and genuine scholarship eligibility.
+2. **The Budget-Conscious Middle-Class Parent**: Prioritizing campus safety, verified accreditations (NAAC/UGC/Tier ranking), no hidden fees, emergency diaspora contact networks, and transparent cost calculations in NPR with remittance adjustments.
+
+---
+
+## 3. Technology Stack & Architectural Standards
+- **Framework**: Next.js 14+ (App Router, Server Components, Server Actions, TypeScript).
+- **Styling & UI**: Tailwind CSS, Shadcn/UI, Radix Primitives, Lucide Icons.
+- **Micro-Interactions & 3D**: Framer Motion, Three.js / React Three Fiber (R3F) or Spline for lightweight, mobile-optimized 3D city/campus visualizations.
+- **Database & Auth**: Supabase (PostgreSQL), Prisma ORM or Drizzle ORM, Supabase Auth (Row Level Security enabled).
+- **State Management**: Zustand / TanStack Query (React Query).
+- **Document Generation**: `@react-pdf/renderer` or Puppeteer microservice for dynamic PDF Dossier generation.
+- **Data & Localization**: Real-time currency conversion rates (INR, USD, JPY, GBP, AUD to NPR), multi-language support (English & Nepali toggles).
+
+---
+
+## 4. Core Functional Modules
+
+### A. The "Total Reality Cost" vs. "Agent Quote" Simulator
+- Calculates total 3–4 year expenditure converted to NPR:
+  - Base tuition + mandatory hidden institutional costs (exam fees, lab charges, library deposits, uniform/book fees).
+  - Realistic accommodation (hostel vs. independent flat sharing) and food/mess expenses.
+  - Foreign travel, Nepal Ministry of Education No Objection Certificate (NOC) processing, TU equivalence fees, visa fees, and initial foreign exchange card setup costs.
+- Includes a comparison slider: "What the Agent Quoted" vs. "Real Net Living Cost".
+
+### B. Consultancy Offer Evaluator & Fact-Checker
+- Searchable directory of colleges with unvarnished ratings:
+  - Accreditation status (NAAC grade, AICTE, NIRF rank, UGC affiliation).
+  - Geographical Isolation Index (actual distance to city center, metro/bus connectivity, travel times).
+  - Median verified placement package (contrasted against marketing brochure claims).
+
+### C. Ground-Reality Peer Review Network
+- Crowd-sourced verified reviews strictly from Nepali diaspora students enrolled in that city/institution.
+- Metrics rated on a 1–5 scale:
+  - **Food Compatibility**: North vs. South Indian mess catering to Nepali palates.
+  - **Language Strictness**: Necessity of local languages (e.g., Kannada for clinical postings/daily commerce in Bangalore; JLPT N3/NAT for Japan part-time jobs).
+  - **Part-Time Feasibility**: Legal work hours, job market saturation, and typical wage-to-living cost ratios.
+  - **Nepali Diaspora Density & Safety**: Local student associations, festival gatherings, and regional safety scores.
+
+### D. 3D Hub & Campus Visualizer
+- Lightweight, interactive 3D map canvas:
+  - Highlights major college clusters (e.g., Bangalore IT corridors: Electronic City, Whitefield, Yelahanka).
+  - Visualizes walking distances to hospitals, tech parks, metro stations, and verified student accommodations.
+
+### E. The "Consultancy Defense Dossier" (Exportable Report)
+- Generates an executive PDF report summarizing:
+  - Shortlisted colleges matching the student’s exact budget cap in NPR.
+  - Pre-calculated maximum allowable tuition & living costs.
+  - A bulleted "Questionnaire for the Agent" (e.g., "Are lab fees included in Year 2?", "What is the NAAC renewal date?", "Does the institution hold a direct TU Equivalence?").
+  - Official links to verified scholarships (e.g., COMPEX Indian Embassy scholarships, MEXT Japan, Australian Destination grants).
+
+---
+
+## 5. PostgreSQL Database Schema (Prisma Format)
+
+```prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Country {
+  INDIA
+  JAPAN
+  AUSTRALIA
+  UK
+  USA
+  CANADA
+}
+
+model Institution {
+  id                  String         @id @default(cuid())
+  name                String
+  slug                String         @unique
+  country             Country
+  city                String
+  state               String?
+  accreditation       String         // e.g., "NAAC A++", "Tier-1", "UGC Recognized"
+  latitude            Float
+  longitude           Float
+  isolationScore      Int            // 1 (Urban Hub) to 5 (Extremely Isolated)
+  tuitionAnnualLocal  Decimal
+  currencyCode        String         // INR, JPY, USD, AUD, etc.
+  mandatoryHiddenFees Decimal        // Exam, lab, uniforms
+  medianPlacementInr  Decimal?
+  programs            Program[]
+  reviews             PeerReview[]
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+}
+
+model Program {
+  id              String       @id @default(cuid())
+  institutionId   String
+  institution     Institution  @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  name            String       // e.g., "BCA", "B.Tech Computer Science", "B.Sc Nursing"
+  degreeLevel     String       // Undergraduate, Postgraduate, Diploma
+  durationYears   Int
+  tuitionTotalNpr Decimal      // Normalized NPR calculation
+}
+
+model PeerReview {
+  id                 String       @id @default(cuid())
+  institutionId      String
+  institution        Institution  @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  verifiedStudent    Boolean      @default(false)
+  studentBatch       String?      // e.g., "Batch of 2024"
+  foodRating         Int          // 1 to 5
+  languageStrictness Int          // 1 (English/Hindi fine) to 5 (Local language mandatory)
+  partTimeJobReality Int          // 1 (Extremely difficult) to 5 (Readily available)
+  safetyScore        Int          // 1 to 5
+  commentText        String
+  nepaliCommunityTip String?
+  createdAt          DateTime     @default(now())
+}
+
+model DossierRecord {
+  id            String   @id @default(cuid())
+  studentName   String
+  targetField   String
+  maxBudgetNpr  Decimal
+  targetCountry Country
+  selectedColleges Json
+  createdAt     DateTime @default(now())
+}

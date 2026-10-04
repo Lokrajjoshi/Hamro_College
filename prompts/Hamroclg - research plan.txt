@@ -1,0 +1,11 @@
+Hamroclg - research plan
+
+Proposed Research Title
+"An Explainable AI and AHP-TOPSIS Hybrid Framework for Bias-Free Higher Education Recommendation: Countering Consultancy Manipulation via Agentic RAG"
+
+Act as a Principal Full-Stack Architect and Product Lead. Design a modern, responsive web application named HamroClg built for Nepali students and middle-class parents planning higher education across India (e.g., Bangalore, Pune) and abroad (e.g., Japan, USA, UK, Australia). 
+
+these things are taken care by consultant we know very well but not everytime we can trust or rely on someone just like tht so self research idea , knowledge then talking to consultant after selection makes sense so this is more safer choice before we even consult anyone, they wll also provide suggest etc but not much in detailed as exactly we need , they might think of the links they have partners , as obviously at the end they are doing bussiness this is there work , we should not get easily manipulated or in trap bcz of there words etc so this a platform which help u provide clear plan , vision etc wt how etc liek tht is it 
+
+do we already have any webistes like these in nepal or anything global kind ? which all share an wt is the diff in theres an ours proivde me comparison an how we can develop an make it more better i need more clear plan so it doesnt look same ours shld be problem solving an genuinely be imapctful an should be able to create or work on some research paper etc on these if so ,, hence provide all details an comparison like tables u show of ours n others wt how it is diff et 
+
